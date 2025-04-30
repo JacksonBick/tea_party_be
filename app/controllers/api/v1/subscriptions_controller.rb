@@ -5,12 +5,18 @@ class Api::V1::SubscriptionsController < ApplicationController
   rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
 
   def index
-    subscriptions = Subscription.all
-    render json: subscriptions, include: [:customer, :teas]
+    subscriptions = Subscription.includes(:teas).all
+    render json: subscriptions.to_json(include: { teas: { only: [:title, :image_url] } })
   end
 
   def show
-    render json: @subscription, include: [:customer, :teas]
+    subscription = Subscription.includes(:teas, :customers).find(params[:id])
+    render json: subscription.to_json(
+      include: {
+        teas: { only: [:id, :title, :description, :image_url, :price] },
+        customers: { only: [:first_name, :last_name] }
+      }
+    )
   end
 
   def update

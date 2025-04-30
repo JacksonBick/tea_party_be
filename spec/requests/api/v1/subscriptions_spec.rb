@@ -13,43 +13,46 @@ RSpec.describe "Api::V1::Subscriptions", type: :request do
       title: "Green Tea",
       description: "A refreshing green tea.",
       temperature: 80,
-      brew_time: 3
+      brew_time: 3,
+      price: 9.99
     )
 
     @subscription = Subscription.create!(
-      title: "Monthly Green Tea Subscription",
-      price: 19.99,
+      title: "Green Tea Subscription",
       status: 0,
-      frequency: "monthly",
-      customer: @customer
+      frequency: "monthly"
     )
 
+    @subscription.customers << @customer
     TeaSubscription.create!(subscription: @subscription, tea: @tea)
   end
 
   describe "GET /api/v1/subscriptions" do
-    it "returns all subscriptions" do
+    it "returns all subscriptions with teas" do
       get "/api/v1/subscriptions"
 
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body.first["title"]).to eq(@subscription.title)
+      expect(body.first["teas"].first["title"]).to eq(@tea.title)
     end
   end
 
   describe "GET /api/v1/subscriptions/:id" do
-    it "returns a single subscription with customer and teas" do
+    it "returns a single subscription with customers and teas including prices" do
       get "/api/v1/subscriptions/#{@subscription.id}"
 
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
+
       expect(body["title"]).to eq(@subscription.title)
-      expect(body["customer"]["first_name"]).to eq(@customer.first_name)
       expect(body["teas"].first["title"]).to eq(@tea.title)
+      expect(body["teas"].first["price"]).to eq("9.99")
+      expect(body["customers"].first["first_name"]).to eq(@customer.first_name)
     end
 
     it "returns 404 if subscription not found" do
-      get "/api/v1/subscriptions/99"
+      get "/api/v1/subscriptions/9999"
 
       expect(response).to have_http_status(:not_found)
       body = JSON.parse(response.body)
@@ -78,30 +81,30 @@ RSpec.describe "Api::V1::Subscriptions", type: :request do
       expect(@subscription.reload.status).to eq("active")
     end
 
-    it "updates subscription attributes normally" do
+    it "updates subscription attributes" do
       patch "/api/v1/subscriptions/#{@subscription.id}", params: {
-        subscription: { title: "New title" }
+        subscription: { title: "Updated Title" }
       }
 
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
-      expect(body["title"]).to eq("New title")
-      expect(@subscription.reload.title).to eq("New title")
+      expect(body["title"]).to eq("Updated Title")
+      expect(@subscription.reload.title).to eq("Updated Title")
     end
 
     it "returns an error if update fails" do
       patch "/api/v1/subscriptions/#{@subscription.id}", params: {
-        subscription: { price: nil } 
+        subscription: { frequency: nil }
       }
 
       expect(response).to have_http_status(:unprocessable_entity)
       body = JSON.parse(response.body)
-      expect(body["errors"]).to include("Price can't be blank")
+      expect(body["errors"]).to include("Frequency can't be blank")
     end
 
-    it "returns an error if required params are missing" do
+    it "returns error if required params missing" do
       patch "/api/v1/subscriptions/#{@subscription.id}"
-    
+
       expect(response).to have_http_status(:bad_request)
       body = JSON.parse(response.body)
       expect(body["error"]).to eq("Required parameters missing")
