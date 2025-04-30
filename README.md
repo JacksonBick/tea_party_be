@@ -1,24 +1,24 @@
-# README
+Project Overview
+The backend is a Ruby on Rails API that manages tea subscriptions, customers, and associated teas. It exposes endpoints for retrieving subscription data and modifying subscription status.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Features
+Subscriptions belong to multiple teas and customers
 
-Things you may want to cover:
+Dynamic price calculation based on included teas
 
-* Ruby version
+Ability to exclude teas from pricing without deletion
 
-* System dependencies
+PATCH endpoints to cancel/reactivate subscriptions
 
-* Configuration
+Planning Process
+The backend was designed to:
 
-* Database creation
+Support dynamic pricing: total_price depends on associated teas
 
-* Database initialization
+Handle frontend-driven filtering: accepts tea IDs to exclude
 
-* How to run the test suite
+Return nested JSON (subscription includes teas and customers)
 
-* Services (job queues, cache servers, search engines, etc.)
+I'm very happy with my backend. I definitely understand it much better and feel proud of the fact that it uses a minimal number of files, achieves 100% test coverage, and includes dynamic seeds that assign each tea its own image using a URL.
 
-* Deployment instructions
-
-* ...
+For a good show of the evolution of this back end i recommend looking at m migrations as it shows how my plans changed through out the project
