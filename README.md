@@ -1,73 +1,74 @@
-Tea Party Backend
-A RESTful Rails API that powers a dynamic tea subscription service with customizable pricing, clean data structures, and full CRUD functionality.
+# Tea Party Backend
 
-Features
-Customers and teas can be part of multiple subscriptions
+This is the Ruby on Rails API backend for my Tea Party subscription app. It handles all the data around teas, customers, and subscriptions, and exposes RESTful endpoints to support the frontend.
 
-Real-time total price calculation based on selected teas
+---
 
-Ability to exclude teas from price calculation without deleting them
+## Features
 
-PATCH endpoints to cancel or reactivate a subscription
+- Customers and teas can both belong to multiple subscriptions
+- Real-time total price calculation based on included teas
+- Ability to exclude teas from pricing without deleting them
+- PATCH endpoints to cancel or reactivate a subscription
+- Nested JSON responses including associated teas and customers
+- Seed data includes image URLs and randomized prices for each tea
 
-Nested JSON responses including associated teas and customers
+---
 
-Seed data with image URLs and randomized prices for each tea
+## Project Overview
 
-Project Overview
-The backend supports a dynamic pricing model where the total subscription cost is calculated from the prices of activated teas — without removing any teas from the subscription. This allows for a fast, user-friendly experience while also subtly promoting new teas to customers.
+The backend supports a dynamic pricing setup where the total subscription price updates based on which teas are currently "active" — without needing to remove teas from the subscription entirely. I set it up this way so the user experience stays fast and smooth, while also leaving room to softly advertise new teas to customers.
 
-Subscriptions are exposed via JSON APIs designed for a React frontend, and support:
+Everything is exposed through JSON APIs built to work with a React frontend. Subscriptions support:
 
-Filtering teas by max price
+- Filtering teas by max price
+- Dynamically toggling which teas count toward the price
+- Changing status (active or cancelled)
 
-Dynamically toggling tea inclusion in the price calculation
+---
 
-Updating subscription status (active or cancelled)
+## Planning & Implementation
 
-Planning & Implementation
-Goals
-Keep models tightly focused and relationships clearly defined
+### Goals
 
-Support dynamic, frontend-driven filtering and calculation
+- Keep models clean and relationships straightforward
+- Make price and filtering logic dynamic and frontend-driven
+- Write code that’s easy to follow but still gets everything done
 
-Maintain readable, concise code while delivering full functionality
+### What I Did
 
-Design Decisions
-Built custom instance methods on the Subscription model to handle:
+- Built custom methods on the `Subscription` model for:
+  - Calculating price based on included teas
+  - Excluding teas without deleting associations
+- Wrote dynamic seed data with random pricing and image URLs
+- Used serializers to return clean nested JSON
+- Reached 100% test coverage using RSpec
 
-Dynamic total price calculation
+---
 
-Tea exclusions without removing relationships
+## Challenges & Wins
 
-Created dynamic seed data with randomized pricing and image URLs
+- Getting the tea images to match the right teas felt amazing once it finally worked
+- Connecting the frontend and backend and seeing it all come together smoothly was a big highlight
+- I used as few files as possible while keeping things organized and readable — which I’m proud of
+- 100% test coverage! I know there are ways to fake that, but I actually tested all the real user-facing logic with strong unit tests
 
-Used serializers to deliver clean, nested JSON for the frontend
+> Just a heads-up: I had to create a new repo for this backend after losing the original on GitHub. Thankfully, I still had everything locally, but that’s why this one doesn’t have a full commit or migration history.
 
-Maintained 100% test coverage with RSpec
+---
 
-Challenges & Wins
-Successfully associating dynamic tea images with the correct teas was a major technical win
+## Getting Started
 
-Connecting the backend to the React frontend and seeing the application run smoothly was highly rewarding
-
-Maintained a minimal yet organized file structure for clarity and efficiency
-
-Achieved complete test coverage — not just for appearance, but with thorough unit tests validating all functionality
-
-Note: This repository was recreated after the original was lost on GitHub. Since the project still existed locally, the codebase is fully intact, but the commit and migration history are not preserved.
-
-Getting Started
 To run locally:
-bash
-Copy
-Edit
-git clone git@github.com:JacksonBick/tea_party_be.git  
-cd tea_party_be  
-bundle install  
-rails db:{create,migrate,seed}  
-rails s  
+
+```bash
+git clone git@github.com:JacksonBick/tea_party_be.git
+cd tea_party_be
+bundle install
+rails db:{create,migrate,seed}
+rails s
 To run tests:
+
 bash
 Copy
 Edit
@@ -81,7 +82,9 @@ RSpec for testing
 
 Fast JSON API for serialization
 
-Related Repository
-Frontend: https://github.com/JacksonBick/tea-party-fe
+Related Repositories
+Frontend repo: https://github.com/JacksonBick/tea-party-fe
 
-
+pgsql
+Copy
+Edit
